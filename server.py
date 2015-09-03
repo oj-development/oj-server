@@ -54,6 +54,9 @@ def runcode(indata,outdata,timeout,setting,mlimit,tempdir):
         point_status=jresult.MLE
         test_process.kill()
         output,err=test_process.communicate()
+    except BrokenPipeError as e:
+        test_process.kill()
+        output,err=test_process.communicate()
     end = time.time()
     if point_status==None:
         if test_process.returncode>0:
