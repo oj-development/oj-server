@@ -1,4 +1,4 @@
-import socket,threading,subprocess,json,os,time,base64,random,shutil,uuid
+import socket,threading,subprocess,json,os,time,base64,random,shutil,uuid,hashlib
 from result_name import *
 compiler={"pas":"fpc","c":"gcc","cpp":"g++"}
 def answer_compare(a,b,method):
@@ -140,7 +140,17 @@ def tcplink(sock, addr):
                 data=json.loads(f.read())
         else:
             sock.send(json.dumps([1,record[2]]).encode('utf-8'))
-            data=sock.recv(1024000000).decode('utf-8')
+            data=sock.recv(1024000000)
+            md5 = hashlib.md5()
+            md5.update(data)
+            try_count=0
+            while md5.hexdigest()!=record[2]:
+                try_count=try_count+1
+                sock.send(json.dumps([4,try_count]).encode('utf-8'))
+                newdata=sock.recv(1024000000)
+                data=data+newdata
+                md5.update(newdata)
+            data=data.decode('utf-8')
             with open(cachefile, 'w') as f:
                 f.write(data)
             data=json.loads(data)
