@@ -171,7 +171,7 @@ def tcplink(sock, addr):
             f.write(record[1][1])
         p=subprocess.Popen([compiler[record[1][0]][0],'temp.'+record[1][0]]+compiler[record[1][0]][1:], stdout=subprocess.PIPE, cwd=tempdir)
         log=p.communicate()[0].decode('utf-8')
-        print(log)
+#        print(log)
         score=0
         if p.returncode>0:
             status=[[jresult.CE.value,0,""]]
