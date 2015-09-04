@@ -1,6 +1,6 @@
 import socket,threading,subprocess,json,os,time,base64,random,shutil,uuid,hashlib
 from result_name import *
-compiler={"pas":"fpc","c":"gcc","cpp":"g++"}
+compiler={"pas":["fpc","-O1","-Co","-Cr","-Ct","-Ci"],"c":["gcc","-otemp","-O2","-Wall","-lm","--static","-std=c99","-DONLINE_JUDGE"],"cpp":["g++","-otemp","-O2","-Wall","-lm","--static","-DONLINE_JUDGE"]}
 def answer_compare(a,b,method):
     if method&1!=0:
         a=a.replace("\r","")
@@ -169,9 +169,9 @@ def tcplink(sock, addr):
             setting["output"]=os.path.join(tempdir,setting["output"])
         with open(file_name, 'w') as f:
             f.write(record[1][1])
-        p=subprocess.Popen([compiler[record[1][0]],file_name], stdout=subprocess.PIPE)
+        p=subprocess.Popen([compiler[record[1][0]][0],'temp.'+record[1][0]]+compiler[record[1][0]][1:], stdout=subprocess.PIPE, cwd=tempdir)
         log=p.communicate()[0].decode('utf-8')
-#        print(log)
+        print(log)
         score=0
         if p.returncode>0:
             status=[[jresult.CE.value,0,""]]
